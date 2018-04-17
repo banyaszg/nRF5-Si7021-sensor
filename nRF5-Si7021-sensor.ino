@@ -28,29 +28,34 @@
 #define MY_PASSIVE_NODE
 
 // Passive mode requires static node ID
-#define MY_NODE_ID 100
+#define MY_NODE_ID 128
 
 // Enable and select radio type attached
-//#define MY_RADIO_NRF24
 #define MY_RADIO_NRF5_ESB
-//#define MY_RADIO_RFM69
-//#define MY_RADIO_RFM95
+
+#ifndef MY_DEBUG
+  #define MY_DISABLED_SERIAL
+  #define MY_SPLASH_SCREEN_DISABLED
+#endif
+
+//#define MY_NRF5_ESB_PA_LEVEL (NRF5_PA_LOW)
+//#define MY_NRF5_ESB_MODE (NRF5_1MBPS)
 
 #include <Wire.h>
 #include <SI7021.h>
 #include <MySensors.h>
 
 #define SHORT_WAIT 50
-#define LONG_WAIT 6000
+#define LONG_WAIT 60000
 
 SI7021 sensor;
 
-#define CHILD_ID_TEMP 0
-#define CHILD_ID_HUM 1
+#define ID_S_TEMP 0
+#define ID_S_HUM 1
 
 // Initialize general message
-MyMessage msgTemp(CHILD_ID_TEMP, V_TEMP);
-MyMessage msgHum(CHILD_ID_HUM, V_HUM);
+MyMessage msgTemp(ID_S_TEMP, V_TEMP);
+MyMessage msgHum(ID_S_HUM, V_HUM);
 
 void blink(uint8_t repetitions) {
   for(int i = 0; i < repetitions; i++) {
@@ -68,6 +73,7 @@ void setup() {
   Serial.begin(115200);
 #endif
   
+  wait(SHORT_WAIT);
   hwPinMode(LED_BUILTIN, OUTPUT_D0H1);
   blink(1);
   
@@ -80,10 +86,10 @@ void setup() {
       sleep(LONG_WAIT);
     }
   }
-  
-  NRF_CLOCK->INTENSET=B11;  //enable interrupts for EVENTS_HFCLKSTARTED and  EVENTS_LFCLKSTARTED
-  NRF_CLOCK->TASKS_HFCLKSTART=1;  //start the high frequency crystal oscillator clock
-  while(!(NRF_CLOCK->EVENTS_HFCLKSTARTED)) {} //wait until high frequency crystal oscillator clock is up to speed and working
+
+//  NRF_CLOCK->INTENSET=B11;  //enable interrupts for EVENTS_HFCLKSTARTED and  EVENTS_LFCLKSTARTED
+//  NRF_CLOCK->TASKS_HFCLKSTART=1;  //start the high frequency crystal oscillator clock
+//  while(!(NRF_CLOCK->EVENTS_HFCLKSTARTED)) {} //wait until high frequency crystal oscillator clock is up to speed and working
 }
 
 void presentation()
@@ -92,23 +98,27 @@ void presentation()
   sendSketchInfo("nRF5-Si7021 node", "1.0");
 
   // Register all sensors to gw (they will be created as child devices)
-  present(CHILD_ID_TEMP, S_TEMP);
-  present(CHILD_ID_HUM, S_HUM);
+  present(ID_S_TEMP, S_TEMP);
+  wait(SHORT_WAIT);
+  present(ID_S_HUM, S_HUM);
+  wait(SHORT_WAIT);
 }
 
 void loop() {
   static si7021_env data;
   static int batteryPcnt = 0;
   static int oldBatteryPcnt = 0;
-
+  static int batteryCnt = 10;
+  
   sleep(LONG_WAIT);
-
+  
   // get humidity and temperature in one shot, saves power because sensor takes temperature when doing humidity anyway
   data = sensor.getHumidityAndTemperature();
-
+  
   sleep(LONG_WAIT);
   
   send(msgTemp.set((float)data.celsiusHundredths / 100.0, 2));
+  
   sleep(LONG_WAIT);
   
   send(msgHum.set(data.humidityBasisPoints / 100, 0));
@@ -118,10 +128,11 @@ void loop() {
   if(batteryPcnt > 100) batteryPcnt = 100;
   
   sleep(LONG_WAIT);
-
-  if(oldBatteryPcnt != batteryPcnt) {
-      sendBatteryLevel(batteryPcnt);
-      oldBatteryPcnt = batteryPcnt;
+  
+  if((oldBatteryPcnt != batteryPcnt) || ((--batteryCnt) <= 0)) {
+    sendBatteryLevel(batteryPcnt);
+    oldBatteryPcnt = batteryPcnt;
+    batteryCnt = 10;
   }
 }
 
