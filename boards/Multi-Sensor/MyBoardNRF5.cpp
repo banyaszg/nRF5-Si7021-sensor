@@ -6,7 +6,7 @@
   questions, please refer the documentation at
   https://github.com/mysensors/ArduinoHwNRF5 first.
   
-  This file is compatible with ArduinoHwNRF5 > 0.1.0
+  This file is compatible with ArduinoHwNRF5 >= 0.2.0
 
   This file allows you to change the relation between pins referenced in
   the Arduino IDE (0..31) and pins of the nRF5 MCU (P0.00..P0.31).
@@ -16,20 +16,24 @@
   a lot of Arduino code with fixed pin numbers and you need to map these
   pins to specific pins of the nRF5 MCU; you need to change this file.
   
-  If you fill the "g_ADigitalPinMap" Array with numbers between 0..31,
+  If you fill the "g_APinDescription" Array with numbers between 0..31,
   the Arduino pins 0..31 are assigned to pins P0.00..P0.31 of the MCU.
   
   As an example, if you need to change the pin mapping for Arduino pin 5
-  to P0.12 of the MCU, you have to write the 12 into the sixth position
-  in the  "g_ADigitalPinMap" Array.
-  
+  to P0.12 of the MCU, you have to write the 12 after PORT0 into the sixth
+  position in the  "g_APinDescription" Array.
+   
+  The extended attributes only affects the nRF5 variants provided with
+  official Arduino boards. The arduino-nrf5 variant ignores the extended
+  attributes.
+    
   The pin mapping effects commands like "pinMode()", "digitalWrite()",
   "analogRead()" and "analogWrite()".
   
   If you change the pin mapping, you have to modify the pins in
-  "MyNRF5Board.h". Especially the analog pin mapping must be replaced with
+  "MyBoardNRF5.h". Especially the analog pin mapping must be replaced with
   your pin numbers by replacing PIN_AIN0..7 with a number of your mapping
-  array. You can use the constants PIN_AIN0..7 in the "g_ADigitalPinMap"
+  array. You can use the constants PIN_AIN0..7 in the "g_APinDescription"
   Array if you want to reference analog ports MCU independent. You cannot
   use the pins P0.00 and P0.01 for GPIO, when the 32kHz crystal is connected.
 
@@ -37,7 +41,7 @@
   ###########################################################################
 
   Copyright (c) 2014-2015 Arduino LLC.  All right reserved.
-  Copyright (c) 2016 Sandeep Mistry. All right reserved.
+  Copyright (c) 2016 Arduino Srl.  All right reserved.
   Copyright (c) 2017 Sensnology AB. All right reserved.
 
   This library is free software; you can redistribute it and/or
@@ -57,41 +61,32 @@
 
 
 
-#ifdef MYNRF5BOARD
+#ifdef MYBOARDNRF5
 #include <variant.h>
 
-const uint32_t g_ADigitalPinMap[] = {
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-  24,
-  25,
-  26,
-  27,
-  28,
-  29,
-  30,
-  31
+/*
+ * Pins descriptions. Attributes are ignored by arduino-nrf5 variant. 
+ * Definition taken from Arduino Primo Core with ordered ports
+ */
+const PinDescription g_APinDescription[]=
+{
+  { PORT0,  0, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  1, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  2, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  3, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  4, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  5, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  6, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  7, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  8, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0,  9, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER}, // TX
+  { PORT0, 10, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0, 11, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER}, // RX
+  { PORT0, 12, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER},
+  { PORT0, 13, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER}
 };
+
+// Don't remove this line
+#include <compat_pin_mapping.h>
+
 #endif

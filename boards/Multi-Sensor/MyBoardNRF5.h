@@ -6,13 +6,13 @@
   questions, please refer the documentation at
   https://github.com/mysensors/ArduinoHwNRF5 first.
 
-  This file is compatible with ArduinoHwNRF5 > 0.1.0
+  This file is compatible with ArduinoHwNRF5 >= 0.2.0
 
   This file allows you to change the pins of internal hardware, like the
   serial port, SPI bus or Wire bus.
 
   All pins referenced here are mapped via the "g_ADigitalPinMap" Array
-  defined in "MyNRF5Board.cpp" to pins of the MCU.
+  defined in "MyBoardNRF5.cpp" to pins of the MCU.
   
   As an example, if you have at the third position in "g_ADigitalPinMap" the
   12, then all ports referenced in Arduino with 2 are mapped to P0.12. If you
@@ -39,8 +39,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _MYNRF5BOARD_H_
-#define _MYNRF5BOARD_H_
+#ifndef _MYBOARDNRF5_H_
+#define _MYBOARDNRF5_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -48,10 +48,10 @@ extern "C"
 #endif // __cplusplus
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (32u)
-#define NUM_DIGITAL_PINS     (32u)
-#define NUM_ANALOG_INPUTS    (8u)
-#define NUM_ANALOG_OUTPUTS   (8u)
+#define PINS_COUNT           (14u)
+#define NUM_DIGITAL_PINS     (14u)
+#define NUM_ANALOG_INPUTS    (0u)
+#define NUM_ANALOG_OUTPUTS   (0u)
 
 /* 
  *  LEDs
@@ -64,14 +64,7 @@ extern "C"
  *  https://github.com/mysensors/MySensors/blob/development/drivers/NRF5/nrf5_wiring_constants.h
  *
  */
-#define PIN_LED1                (1)
-//  #define PIN_LED2                (10)
-//  #define PIN_LED3                (11)
-//  #define PIN_LED4                (13)
-//  #define PIN_LED5                (12)
-//  #define PIN_LED6                (14)
-//  #define PIN_LED7                (15)
-//  #define PIN_LED8                (16)
+#define PIN_LED1              (1)
 #define LED_BUILTIN          PIN_LED1
 
 /* 
@@ -91,21 +84,21 @@ extern "C"
 /* 
  * Analog ports
  *  
- * If you change g_ADigitalPinMap, replace PIN_AIN0 with
- * port numbers mapped by the g_ADigitalPinMap Array.
- * You can add PIN_AIN0 to the g_ADigitalPinMap Array if
+ * If you change g_APinDescription, replace PIN_AIN0 with
+ * port numbers mapped by the g_APinDescription Array.
+ * You can add PIN_AIN0 to the g_APinDescription Array if
  * you want provide analog ports MCU independed, you can add
- * PIN_AIN0..PIN_AIN7 to your custom g_ADigitalPinMap Array
- * defined in MyNRF5Board.cpp
+ * PIN_AIN0..PIN_AIN7 to your custom g_APinDescription Array
+ * defined in MyBoardNRF5.cpp
  */
-static const uint8_t A0  = PIN_AIN0;
-static const uint8_t A1  = PIN_AIN1;
-static const uint8_t A2  = PIN_AIN2;
-static const uint8_t A3  = PIN_AIN3;
-static const uint8_t A4  = PIN_AIN4;
-static const uint8_t A5  = PIN_AIN5;
-static const uint8_t A6  = PIN_AIN6;
-static const uint8_t A7  = PIN_AIN7;
+// static const uint8_t A0  = ADC_A0;
+// static const uint8_t A1  = ADC_A1;
+// static const uint8_t A2  = ADC_A2;
+// static const uint8_t A3  = ADC_A3;
+// static const uint8_t A4  = ADC_A4;
+// static const uint8_t A5  = ADC_A5;
+// static const uint8_t A6  = ADC_A6;
+// static const uint8_t A7  = ADC_A7;
 
 /*
  * Serial interfaces
@@ -114,9 +107,8 @@ static const uint8_t A7  = PIN_AIN7;
  * If you have no serial port, use unused pins
  * CTS and RTS are optional.
  */
-
 #define PIN_SERIAL_RX       (8)
-#define PIN_SERIAL_TX       (13)
+#define PIN_SERIAL_TX       (7)
 // #define PIN_SERIAL_CTS      (4)
 // #define PIN_SERIAL_RTS      (5)
 
@@ -128,17 +120,17 @@ static const uint8_t A7  = PIN_AIN7;
  * If SPI is defined MISO, MOSI, SCK are required
  * SS is optional and can be used in your sketch.
  */
-#define SPI_INTERFACES_COUNT 1
+#define SPI_INTERFACES_COUNT 0
 
-#define PIN_SPI_MISO         (22)
-#define PIN_SPI_MOSI         (23)
-#define PIN_SPI_SCK          (24)
-#define PIN_SPI_SS           (21)
-
-static const uint8_t SS   = PIN_SPI_SS;
-static const uint8_t MOSI = PIN_SPI_MOSI;
-static const uint8_t MISO = PIN_SPI_MISO;
-static const uint8_t SCK  = PIN_SPI_SCK;
+// #define PIN_SPI_MISO         (22)
+// #define PIN_SPI_MOSI         (23)
+// #define PIN_SPI_SCK          (24)
+// #define PIN_SPI_SS           (21)
+// 
+// static const uint8_t SS   = PIN_SPI_SS;
+// static const uint8_t MOSI = PIN_SPI_MOSI;
+// static const uint8_t MISO = PIN_SPI_MISO;
+// static const uint8_t SCK  = PIN_SPI_SCK;
 
 /*
  * Wire Interfaces
